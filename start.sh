@@ -8,9 +8,9 @@ ln -s /bin/true /sbin/initctl
 mkdir -p /var/run/sshd
 /usr/sbin/sshd
 
-# start redis
-redis-server > /dev/null 2>&1 &
-sleep 5
+# TODO: write about redis
+# redis-server > /dev/null 2>&1 &
+# sleep 5
 
 # remove PIDs created by GitLab init script
 rm /home/git/gitlab/tmp/pids/*
@@ -35,21 +35,11 @@ sed -i 's/^timeout .*/timeout 300/' /home/git/gitlab/config/unicorn.rb
 # Change repo path in gitlab-shell config
 sed -i -e 's/\/home\/git\/repositories/\/srv\/gitlab\/data\/repositories/g' /home/git/gitlab-shell/config.yml
 
-# Link MySQL dir to /srv/gitlab/data
-mv /var/lib/mysql /var/lib/mysql-tmp
-ln -s /srv/gitlab/data/mysql /var/lib/mysql
-
 # Run the firstrun script
 /srv/gitlab/firstrun.sh
 
-# start mysql
-mysqld_safe &
-
 # start gitlab
 service gitlab start
-
-# start nginx
-service nginx start
 
 sleep 5
 
